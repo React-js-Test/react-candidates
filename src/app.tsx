@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import ReactDOM from "react-dom"
 import "./index.css"
 import InputsAmount from "./pages/amountInputs/input.component"
@@ -15,12 +15,6 @@ const App = (props: any) => {
     const [Ammout, setAmmout] = useState(0)
     const [totalAmmount, setTotalAmmount] = useState(0)
 
-    // totalAmmount  should be payeed
-    const TotalAmmount = () => {
-        let Total = Ammout * 0.052
-        let result = Total + Ammout
-        setTotalAmmount(result)
-    }
     // get the amount loan  Rited
     const Loan = (y: number) => {
         setAmmout(y)
