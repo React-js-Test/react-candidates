@@ -5,7 +5,7 @@ import "../../index.css"
 const InputsAmount = (props: any) => {
     let [count, setcount] = useState(props.element[0].min_tenure)
     let [Ammount, setAmmount] = useState("")
-
+    let [view, setview] = useState(false)
     let [data, setData] = useState(props.element[0])
     useEffect(() => {
         setData(props.element.find((a: any) => a.id === props.vue))
@@ -22,13 +22,16 @@ const InputsAmount = (props: any) => {
     // inc and dec the input of MonthsNumber
     const inc = () => {
         if (count < data.max_tenure) {
-            setcount(count++)
+            setcount(++count)
         }
     }
     const dec = () => {
-        if (count >= data.min_tenure) {
-            setcount(count--)
+        if (count > data.min_tenure) {
+            setcount(--count)
         }
+    }
+    const formatNumber = (e: number) => {
+        new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format(e)
     }
 
     return (
@@ -42,7 +45,6 @@ const InputsAmount = (props: any) => {
                     }}>
                     <div style={{ width: 200 }}>
                         <h1 style={{ fontFamily: "WorkSans-Regular" }}>loan amount</h1>
-
                         <div
                             id="input"
                             className="flex flex-wrap items-stretch w-full mb-4 relative">
@@ -60,13 +62,37 @@ const InputsAmount = (props: any) => {
                                 min={data.min_amount}
                                 max={data.max_amount}
                                 onChange={(event) => {
+                                    {
+                                        Number(event.target.value) < Number(data.max_amount)
+                                            ? setview(false)
+                                            : setview(true)
+                                    }
+
                                     setAmmount(event.target.value),
                                         props.Loan(parseInt(event.target.value))
                                 }}
-                                type="Number"
+                                placeholder="0,000"
+                                type="number"
+                                value={Ammount}
                                 className="flex-shrink flex-grow flex-auto leading-normal w-px flex-1 border h-10 border-grey-light px-3 relative"
                             />
                         </div>
+                        {view ? (
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "space-around",
+                                    flexDirection: "row",
+                                    color: "red",
+                                    fontSize: "10px",
+                                }}>
+                                <img
+                                    style={{ height: 15, width: 15 }}
+                                    src="https://media.discordapp.net/attachments/898306285102071839/968417521558511636/red-x.png?width=429&height=429"
+                                />
+                                <h6>your max_amount is {data.max_amount}</h6>
+                            </div>
+                        ) : null}
                     </div>
                     <div style={{ width: 200 }}>
                         <span style={{ marginLeft: "20%" }}>Number of Months</span>
@@ -78,7 +104,7 @@ const InputsAmount = (props: any) => {
                                 <span
                                     className="m-auto text-2xl font-thin"
                                     onClick={props.getCount(count)}>
-                                    −
+                                    {count == data.min_tenure ? "" : "-"}
                                 </span>
                             </button>
                             <input
@@ -88,9 +114,6 @@ const InputsAmount = (props: any) => {
                                 value={count}
                                 onChange={(event) => {
                                     setcount(event.target.value)
-                                    setTimeout(() => {
-                                        props.getCount(count)
-                                    }, 1000)
                                 }}
                             />
                             <button
@@ -100,7 +123,7 @@ const InputsAmount = (props: any) => {
                                 <span
                                     className="m-auto text-2xl font-thin"
                                     onClick={props.getCount(count)}>
-                                    +
+                                    {count == data.max_tenure ? "" : "+"}
                                 </span>
                             </button>
                         </div>
